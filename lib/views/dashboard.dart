@@ -47,37 +47,41 @@ class _DashboardViewState extends State<DashboardView> {
         ),
         child: SafeArea(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// HEADER
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 25),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Our Store",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Our Store",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    const SizedBox(height: 16), // Spacing
-                    Text(
-                      "Selamat datang, ${nama ?? '-'}",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      SizedBox(height: 8),
+                      const SizedBox(height: 16), // Spacing
+                      Text(
+                        "Selamat datang, ${nama ?? '-'}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      "Role anda sebagai : ${role ?? '-'}",
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    ),
-                  ],
+                      const SizedBox(height: 6),
+                      Text(
+                        "Role anda sebagai : ${role ?? '-'}",
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
