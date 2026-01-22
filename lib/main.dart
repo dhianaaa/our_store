@@ -12,7 +12,7 @@ void main() {
       '/': (context) => RegisterUserView(),
       '/login': (context) => LoginView(),
       '/dashboard': (context) => DashboardView(),
-      '/splash': (context) => Splash_screen(),
+      '/splash': (context) => SplashScreen(),
     },
   ));
 }
