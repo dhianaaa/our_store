@@ -37,7 +37,7 @@ class _LoginViewState extends State<LoginView> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color.fromARGB(255, 254, 220, 84), Color.fromARGB(255, 255, 215, 35)],
+                  colors: [Color.fromARGB(255, 46, 125, 50), Color.fromARGB(255, 40, 131, 45)],
                 ),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(60),
@@ -130,7 +130,7 @@ class _LoginViewState extends State<LoginView> {
                         children: [
                           Checkbox(
                             value: rememberMe,
-                            activeColor: const Color.fromARGB(255, 243, 194, 33),
+                            activeColor: Colors.green.shade800,
                             onChanged: (v) {
                               setState(() => rememberMe = v!);
                             },
@@ -140,7 +140,7 @@ class _LoginViewState extends State<LoginView> {
                           const Spacer(),
                           const Text(
                             "Forget password?",
-                            style: TextStyle(fontSize: 12, color: Color.fromARGB(255, 243, 177, 33)),
+                            style: TextStyle(fontSize: 12, color: Color.fromARGB(255, 46, 125, 50)),
                           ),
                         ],
                       ),
@@ -154,7 +154,7 @@ class _LoginViewState extends State<LoginView> {
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(
-                              color: Color.fromARGB(255, 243, 177, 33),
+                              color: Color.fromARGB(255, 46, 125, 50),
                               width: 1.6,
                             ),
                             shape: RoundedRectangleBorder(
@@ -200,7 +200,7 @@ class _LoginViewState extends State<LoginView> {
                                   "Login",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Color.fromARGB(255, 243, 198, 33),
+                                    color: Color.fromARGB(255, 36, 119, 40),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

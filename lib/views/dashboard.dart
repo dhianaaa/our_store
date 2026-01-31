@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toko_online/model/user_login.dart';
+import 'package:toko_online/widgets/bottom_nav.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -32,6 +33,7 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNav(0),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -40,8 +42,8 @@ class _DashboardViewState extends State<DashboardView> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 235, 221, 22),
-              Color.fromARGB(255, 211, 201, 15),
+              Color.fromARGB(255, 46, 125, 50),
+              Color.fromARGB(255, 39, 119, 43),
             ],
           ),
         ),
@@ -110,7 +112,7 @@ class _DashboardViewState extends State<DashboardView> {
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(
-                              color: Color.fromARGB(255, 243, 187, 33),
+                              color: Color.fromARGB(255, 46, 125, 50),
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24),
@@ -123,7 +125,7 @@ class _DashboardViewState extends State<DashboardView> {
                           child: const Text(
                             "Log out",
                             style: TextStyle(
-                              color: Color.fromARGB(255, 243, 177, 33),
+                              color: Color.fromARGB(255, 46, 125, 50),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
