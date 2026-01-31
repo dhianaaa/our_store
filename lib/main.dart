@@ -9,7 +9,7 @@ import 'package:toko_online/views/toko_view.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: '/toko',
+    initialRoute: '/splash',
     routes: {
       '/': (context) => RegisterUserView(),
       '/login': (context) => LoginView(),
