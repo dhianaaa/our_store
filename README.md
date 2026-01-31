@@ -1,5 +1,5 @@
 # toko_online
-- [Link drive vidio :](https://drive.google.com/file/d/1tQ8of0Ac8uYOIzsbxzfF6oBE-gLRZUUh/view?usp=sharing)
+- [Link drive vidio Tugas 2:](https://drive.google.com/file/d/1tQ8of0Ac8uYOIzsbxzfF6oBE-gLRZUUh/view?usp=sharing)
 
 A new Flutter project.
 
