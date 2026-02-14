@@ -11,7 +11,6 @@ void main() {
     debugShowCheckedModeBanner: false,
     initialRoute: '/splash',
     routes: {
-      '/': (context) => RegisterUserView(),
       '/login': (context) => LoginView(),
       '/dashboard': (context) => DashboardView(),
       '/splash': (context) => SplashScreen(),
