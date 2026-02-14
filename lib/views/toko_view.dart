@@ -167,11 +167,12 @@ class _TokoViewState extends State<TokoView> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: GridView.builder(
                   itemCount: products.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
-                    childAspectRatio: 0.7,
+                    childAspectRatio: 0.65, // Kembali ke 0.65
+                    mainAxisExtent: 280, // Atau gunakan fixed height
                   ),
                   itemBuilder: (context, index) {
                     return _productCard(products[index]);
@@ -197,72 +198,122 @@ class _TokoViewState extends State<TokoView> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          /// IMAGE
-          Container(
-            height: 135,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
+          /// IMAGE - Aspect ratio maintained
+          AspectRatio(
+            aspectRatio: 1.2, // Sedikit lebih tinggi dari lebar
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
               ),
-            ),
-            child: Center(
-              child: Image.asset(product['gambar'], fit: BoxFit.cover),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+                child: Image.asset(
+                  product['gambar'],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey.shade200,
+                      child: const Icon(Icons.image_not_supported, size: 40),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
 
+          /// Content
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
+                /// Product Name
                 Text(
                   product['nama'],
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    height: 1.2,
+                  ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
+
+                /// Price
                 Text(
                   "Rp ${product['harga']}",
                   style: const TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 6),
-                Text(product['detail'],
+                const SizedBox(height: 4),
+
+                /// Detail - Fixed height to prevent layout shift
+                SizedBox(
+                  height: 32, // Fixed height for 2 lines of text
+                  child: Text(
+                    product['detail'],
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.grey.shade600,
-                      fontSize: 12,
-                    )),
-                const SizedBox(height: 27),
+                      fontSize: 11,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
 
-                /// STATUS + ADD
+                const SizedBox(height: 8),
+
+                /// STATUS + ADD - Fixed layout
                 Row(
                   children: [
+                    /// Status text dengan container lebar tetap
                     Expanded(
+                      flex: 3,
                       child: Text(
                         tersedia ? "Tersedia" : "Habis",
                         style: TextStyle(
                           fontSize: 12,
+                          fontWeight: FontWeight.w500,
                           color: tersedia ? Colors.green : Colors.red,
                         ),
                       ),
                     ),
-                    Switch(
-                      value: tersedia,
-                      activeColor: Colors.green,
-                      onChanged: stok == 0
-                          ? null
-                          : (value) {
-                              setState(() {
-                                product['tersedia'] = value;
-                              });
-                            },
+
+                    /// Switch dengan ukuran tetap
+                    Container(
+                      width: 52, // Fixed width untuk switch
+                      height: 24, // Fixed height untuk switch
+                      alignment: Alignment.centerRight,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Switch(
+                          value: tersedia,
+                          activeColor: Colors.green,
+                          onChanged: stok == 0
+                              ? null
+                              : (value) {
+                                  setState(() {
+                                    product['tersedia'] = value;
+                                  });
+                                },
+                        ),
+                      ),
                     ),
                   ],
                 ),

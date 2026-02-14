@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:toko_online/views/circle_transition.dart';
-import 'package:toko_online/views/login_view.dart';
+import 'login_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -41,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(
         context,
-      ).pushReplacement(circleRevealRoute(const LoginView()));
+      ).pushReplacement(MaterialPageRoute(builder: (_) => const LoginView()));
     });
   }
 

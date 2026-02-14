@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:toko_online/model/toko_model.dart';
-import 'package:toko_online/services/toko.dart';
-import 'package:toko_online/widgets/bottom_nav.dart';
+import '../model/toko_model.dart';
+import '../services/toko.dart';
+import '../widgets/bottom_nav.dart';
 
 class TokoView extends StatefulWidget {
   const TokoView({super.key});
@@ -13,10 +13,10 @@ class TokoView extends StatefulWidget {
 class _TokoViewState extends State<TokoView> {
   String promoTitle = "Kelola Produk Toko Kamu";
   String promoSubtitle = "Tambah, ubah, dan atur promo toko";
-  
+
   late Future<List<ProductModel>> _productsFuture;
   final ProductService _productService = ProductService();
-  
+
   String selectedCategory = "Semua";
   final TextEditingController _searchController = TextEditingController();
   List<ProductModel> filteredProducts = [];
@@ -89,7 +89,11 @@ class _TokoViewState extends State<TokoView> {
                           const CircleAvatar(
                             radius: 18,
                             backgroundColor: Colors.white24,
-                            child: Icon(Icons.notifications_none, color: Colors.white, size: 18),
+                            child: Icon(
+                              Icons.notifications_none,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                           ),
                           Positioned(
                             top: 0,
@@ -108,7 +112,7 @@ class _TokoViewState extends State<TokoView> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
+
                   /// SEARCH BAR
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -129,7 +133,10 @@ class _TokoViewState extends State<TokoView> {
                             decoration: const InputDecoration(
                               hintText: "Cari produk...",
                               border: InputBorder.none,
-                              hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                              hintStyle: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                         ),
@@ -139,7 +146,11 @@ class _TokoViewState extends State<TokoView> {
                               _searchController.clear();
                               setState(() {});
                             },
-                            child: const Icon(Icons.close, size: 18, color: Colors.grey),
+                            child: const Icon(
+                              Icons.close,
+                              size: 18,
+                              color: Colors.grey,
+                            ),
                           ),
                       ],
                     ),
@@ -274,14 +285,17 @@ class _TokoViewState extends State<TokoView> {
                       ),
                     );
                   }
-                  
                   // ERROR STATE
                   else if (snapshot.hasError) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: Colors.red[300],
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             snapshot.error.toString(),
@@ -296,7 +310,12 @@ class _TokoViewState extends State<TokoView> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255, 46, 125, 50),
+                              backgroundColor: const Color.fromARGB(
+                                255,
+                                46,
+                                125,
+                                50,
+                              ),
                             ),
                             child: const Text('Coba Lagi'),
                           ),
@@ -304,18 +323,22 @@ class _TokoViewState extends State<TokoView> {
                       ),
                     );
                   }
-                  
                   // DATA TERSEDIA
                   else if (snapshot.hasData) {
                     List<ProductModel> allProducts = snapshot.data!;
-                    
+
                     // Filter berdasarkan search
-                    List<ProductModel> displayProducts = _searchController.text.isEmpty
+                    List<ProductModel> displayProducts =
+                        _searchController.text.isEmpty
                         ? allProducts
-                        : allProducts.where((p) => 
-                            p.namaBarang.toLowerCase().contains(_searchController.text.toLowerCase())
-                          ).toList();
-                    
+                        : allProducts
+                              .where(
+                                (p) => p.namaBarang.toLowerCase().contains(
+                                  _searchController.text.toLowerCase(),
+                                ),
+                              )
+                              .toList();
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
@@ -341,33 +364,43 @@ class _TokoViewState extends State<TokoView> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          
+
                           /// GRID PRODUK
                           Expanded(
                             child: displayProducts.isEmpty
                                 ? Center(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey[400]),
+                                        Icon(
+                                          Icons.inventory_2_outlined,
+                                          size: 64,
+                                          color: Colors.grey[400],
+                                        ),
                                         const SizedBox(height: 16),
                                         Text(
                                           'Produk tidak ditemukan',
-                                          style: TextStyle(color: Colors.grey[600]),
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                          ),
                                         ),
                                       ],
                                     ),
                                   )
                                 : GridView.builder(
                                     itemCount: displayProducts.length,
-                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisSpacing: 16,
-                                      crossAxisSpacing: 16,
-                                      childAspectRatio: 0.7,
-                                    ),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          mainAxisSpacing: 16,
+                                          crossAxisSpacing: 16,
+                                          childAspectRatio: 0.7,
+                                        ),
                                     itemBuilder: (context, index) {
-                                      return _productCard(displayProducts[index]);
+                                      return _productCard(
+                                        displayProducts[index],
+                                      );
                                     },
                                   ),
                           ),
@@ -375,14 +408,17 @@ class _TokoViewState extends State<TokoView> {
                       ),
                     );
                   }
-                  
                   // EMPTY STATE
                   else {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey[400]),
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
                           const SizedBox(height: 16),
                           const Text('Belum ada produk'),
                         ],
@@ -410,8 +446,8 @@ class _TokoViewState extends State<TokoView> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? const Color.fromARGB(255, 46, 125, 50) 
+          color: isSelected
+              ? const Color.fromARGB(255, 46, 125, 50)
               : Colors.grey[200],
           borderRadius: BorderRadius.circular(20),
         ),
@@ -461,12 +497,18 @@ class _TokoViewState extends State<TokoView> {
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
                             color: Colors.grey[300],
-                            child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                            child: const Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey,
+                            ),
                           ),
                         )
                       : Container(
                           color: Colors.grey[300],
-                          child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                          child: const Icon(
+                            Icons.image_not_supported,
+                            color: Colors.grey,
+                          ),
                         ),
                 ),
               ),
@@ -533,21 +575,18 @@ class _TokoViewState extends State<TokoView> {
                     fontSize: 13,
                   ),
                 ),
-                
+
                 const SizedBox(height: 4),
-                
+
                 Text(
                   product.deskripsi,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 11,
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 11),
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 Text(
                   "Rp ${product.harga}",
                   style: TextStyle(
@@ -632,7 +671,9 @@ class _TokoViewState extends State<TokoView> {
                   labelText: "Judul Promo",
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 46, 125, 50)),
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(255, 46, 125, 50),
+                    ),
                   ),
                 ),
               ),
@@ -643,7 +684,9 @@ class _TokoViewState extends State<TokoView> {
                   labelText: "Deskripsi Promo",
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromARGB(255, 46, 125, 50)),
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(255, 46, 125, 50),
+                    ),
                   ),
                 ),
                 maxLines: 2,
@@ -653,10 +696,7 @@ class _TokoViewState extends State<TokoView> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "Batal",
-                style: TextStyle(color: Colors.grey),
-              ),
+              child: const Text("Batal", style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               onPressed: () {

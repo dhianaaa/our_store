@@ -28,7 +28,7 @@ class ProductService {
       );
 
       // 3. Handle response
-      if (response.statusCode == 200) {
+      if (response.statusCode.toString().startsWith('2')) {
         var jsonData = json.decode(response.body);
         
         // Sesuaikan dengan struktur response API kamu

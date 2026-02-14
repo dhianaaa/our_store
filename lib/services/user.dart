@@ -8,7 +8,7 @@ class UserService {
   Future registerUser(data) async {
     var uri = Uri.parse(url.BaseUrl + "/auth/register");
     var register = await http.post(uri, body: data);
-    if (register.statusCode == 200) {
+    if (register.statusCode.toString().startsWith('2')) {
       var data = json.decode(register.body);
       if (data["status"] == true) {
         ResponseDataMap response = ResponseDataMap(
@@ -40,7 +40,7 @@ class UserService {
   Future loginUser(data) async {// login user
     var uri = Uri.parse(url.BaseUrl + "/auth/login");// endpoint login
     var register = await http.post(uri, body: data);// mengirim data login ke server
-    if (register.statusCode == 200) {
+    if (register.statusCode.toString().startsWith('2')) {// jika status code 2xx
       var data = json.decode(register.body);
       if (data["status"] == true) {
         UserLogin userLogin = UserLogin(// simpan data user login ke shared preferences
