@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toko_online/model/toko_model.dart';
+import 'package:toko_online/model/user_login.dart';
 
 class ProductService {
   static const String baseUrl = "https://learn.smktelkom-mlg.sch.id";
@@ -12,7 +13,8 @@ class ProductService {
       // 1. Ambil token dari SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('user_token'); // Sesuaikan key penyimpanan
-
+      UserLogin userLogin = UserLogin();
+      var userData = await userLogin.getUserLogin();
       if (token == null || token.isEmpty) {
         throw Exception('Token tidak ditemukan. Silakan login ulang.');
       }
