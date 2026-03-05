@@ -1,325 +1,264 @@
-// lib/views/product_view.dart
-
 import 'package:flutter/material.dart';
-import 'package:toko_online/model/toko_model.dart';
-import 'package:toko_online/services/toko.dart';
+import 'package:toko_online/widgets/bottom_nav.dart';
 
 class AktivitasView extends StatefulWidget {
-  const AktivitasView({Key? key}) : super(key: key);
+  const AktivitasView({super.key});
 
   @override
   State<AktivitasView> createState() => _AktivitasViewState();
 }
 
 class _AktivitasViewState extends State<AktivitasView> {
-  final ProductService _productService = ProductService();
-  List<ProductModel>? _products;
-  String? _errorMessage;
-  bool _isLoading = true;
+  int selectedTab = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadProducts();
-  }
-
-  Future<void> _loadProducts() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final products = await _productService.getProducts();
-
-if (mounted) {
-  setState(() {
-    _products = products;
-    _errorMessage = null;
-    _isLoading = false;
-  });
-}
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _products = [];
-          _errorMessage = 'Terjadi kesalahan: ${e.toString()}';
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  // Format harga ke Rupiah
-  String _formatCurrency(int amount) {
-    return 'Rp ${amount.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]}.',
-    )}';
-  }
+  final List<Map<String, dynamic>> aktivitas = [
+    {
+      "tanggal": "18 Jan, 17:36",
+      "judul": "Penjualan Beras Premium",
+      "image": "assets/beras_premium.png",
+      "status": "Selesai",
+      "harga": 11500,
+    },
+    {
+      "tanggal": "15 Jan, 16:14",
+      "judul": "Restock Susu Fresh Milk",
+      "image": "assets/fresh_milk.png",
+      "status": "Selesai",
+      "harga": 7500,
+    },
+    {
+      "tanggal": "14 Jan, 16:23",
+      "judul": "Pesanan Topokki Korean",
+      "image": "assets/topokki_korean.png",
+      "status": "Diproses",
+      "harga": 31000,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Katalog Produk',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.blue,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadProducts,
-          ),
-        ],
-      ),
-      body: _buildBody(),
-    );
-  }
-
-  Widget _buildBody() {
-    // Loading state
-    if (_isLoading) {
-      return const Center(
+      bottomNavigationBar: BottomNav(1),
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text(
-              'Memuat produk...',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Error state
-    if (_errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red[300],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage!,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _loadProducts,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
-                ),
-              ),
-              child: const Text('Coba Lagi'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Empty state
-    if (_products == null || _products!.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.inventory_2_outlined,
-              size: 64,
-              color: Colors.grey[400],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Belum ada produk',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Data available - tampilkan ListView
-    return RefreshIndicator(
-      onRefresh: _loadProducts,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(12),
-        itemCount: _products!.length,
-        itemBuilder: (context, index) {
-          final product = _products![index];
-          return _buildProductCard(product);
-        },
-      ),
-    );
-  }
-
-  Widget _buildProductCard(ProductModel product) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: 100,
-                height: 100,
-                color: Colors.grey[200],
-                child: product.image.isNotEmpty
-                    ? Image.network(
-                        product.image,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Icon(
-                              Icons.broken_image,
-                              size: 40,
-                              color: Colors.grey,
-                            ),
-                          );
-                        },
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        },
-                      )
-                    : const Icon(
-                        Icons.image_not_supported,
-                        size: 40,
-                        color: Colors.grey,
-                      ),
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // Product Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            /// HEADER
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Nama Barang
-                  Text(
-                    product.namaBarang,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  const Text(
+                    "Aktivitas",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 4),
-
-                  // Kategori (jika ada)
-                  if (product.kategoriNama != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        product.kategoriNama!,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.blue[700],
-                        ),
-                      ),
-                    ),
-                  const SizedBox(height: 8),
-
-                  // Harga
-                  Text(
-                    _formatCurrency(product.harga),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Stok
                   Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: product.stok > 0 
-                              ? Colors.green[50] 
-                              : Colors.red[50],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              product.stok > 0 
-                                  ? Icons.inventory 
-                                  : Icons.inventory_2,
-                              size: 14,
-                              color: product.stok > 0 
-                                  ? Colors.green[700] 
-                                  : Colors.red[700],
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Stok: ${product.stok}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: product.stok > 0 
-                                    ? Colors.green[700] 
-                                    : Colors.red[700],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    children: const [
+                      Icon(Icons.help_outline),
+                      SizedBox(width: 12),
+                      Icon(Icons.download),
                     ],
                   ),
                 ],
               ),
             ),
+
+            /// TAB MENU
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  _tabItem("Riwayat", 0),
+                  _tabItem("Dalam Proses", 1),
+                  _tabItem("Terjadwal", 2),
+                  _tabItem("Draf", 3),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// LIST AKTIVITAS
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: aktivitas.length,
+                itemBuilder: (context, index) {
+                  final item = aktivitas[index];
+                  return _aktivitasCard(item);
+                },
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// TAB ITEM
+  Widget _tabItem(String title, int index) {
+    final bool isActive = selectedTab == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() => selectedTab = index);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 16),
+        padding: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isActive ? Color.fromARGB(255, 46, 125, 50) : Colors.transparent,
+              width: 3,
+            ),
+          ),
+        ),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: isActive ? Color.fromARGB(255, 46, 125, 50) : Colors.grey,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _aktivitasCard(Map<String, dynamic> item) {
+    final bool selesai = item['status'] == "Selesai";
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// HEADER STATUS
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  item['tanggal'],
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                ),
+                Text(
+                  selesai ? "Selesai" : "Perlu Dikirim",
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: selesai ? Colors.green : Colors.orange,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(height: 1),
+
+          /// PRODUK
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// IMAGE
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    item['image'],
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 12),
+
+                /// INFO
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item['judul'],
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "1 produk",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Divider(height: 1),
+
+          /// TOTAL & BUTTON
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.black),
+                    children: [
+                      const TextSpan(
+                        text: "Total Pesanan: ",
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      TextSpan(
+                        text: "Rp ${item['harga']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: selesai ? Colors.green : Colors.orange,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    selesai ? "Detail" : "Atur Pengiriman",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

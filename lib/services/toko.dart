@@ -1,53 +1,85 @@
+// lib/services/product_service.dart
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toko_online/model/toko_model.dart';
 import 'package:toko_online/model/user_login.dart';
+import 'package:toko_online/services/url.dart' as url;
 
 class ProductService {
-  static const String baseUrl = "https://learn.smktelkom-mlg.sch.id";
-  static const String endpoint = "/admin/getbarang"; // Sesuaikan!
-
-  Future<List<ProductModel>> getProducts() async {
+  Future<ResponseDataList<ProductModel>> getProduct() async {
     try {
-      // 1. Ambil token dari SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('user_token'); // Sesuaikan key penyimpanan
+      // 1. AMBIL TOKEN
       UserLogin userLogin = UserLogin();
-      var userData = await userLogin.getUserLogin();
-      if (token == null || token.isEmpty) {
-        throw Exception('Token tidak ditemukan. Silakan login ulang.');
+      var user = await userLogin.getUserLogin();
+
+      // 2. CEK LOGIN
+      if (user.status == false || user.token == null) {
+        print("❌ ERROR: User belum login");
+        return ResponseDataList<ProductModel>(
+          status: false,
+          message: 'Anda belum login / token invalid',
+          data: [],
+        );
       }
 
-      // 2. Panggil API dengan Bearer Token
-      var uri = Uri.parse('$baseUrl$endpoint');
-      var response = await http.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      print("✅ Token: ${user.token}");
 
-      // 3. Handle response
-      if (response.statusCode.toString().startsWith('2')) {
-        var jsonData = json.decode(response.body);
+      // 3. ENDPOINT
+      var uri = Uri.parse("${url.BaseUrl}/admin/getbarang");
+      print("📡 URL: $uri");
+
+      // 4. HEADER
+      Map<String, String> headers = {
+        "Authorization": 'Bearer ${user.token}',
+        "Accept": "application/json",
+      };
+
+      // 5. REQUEST
+      var response = await http.get(uri, headers: headers);
+      
+      print("📥 Status: ${response.statusCode}");
+      print("📦 Body: ${response.body}");
+
+      // 6. CEK RESPONSE
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
         
-        // Sesuaikan dengan struktur response API kamu
-        // Jika response: {"status": true, "data": [...]}
-        if (jsonData['status'] == true && jsonData['data'] != null) {
-          List<dynamic> dataList = jsonData['data'];
-          return dataList.map((item) => ProductModel.fromJson(item)).toList();
+        if (data['status'] == true) {
+          List<ProductModel> products = [];
+          
+          if (data['data'] != null && data['data'] is List) {
+            products = (data['data'] as List)
+                .map((item) => ProductModel.fromJson(item))
+                .toList();
+          }
+              
+          return ResponseDataList<ProductModel>(
+            status: true,
+            message: 'Success load data',
+            data: products,
+          );
         } else {
-          return [];
+          return ResponseDataList<ProductModel>(
+            status: false,
+            message: data['message'] ?? 'Failed load data',
+            data: [],
+          );
         }
-      } else if (response.statusCode == 401) {
-        throw Exception('Token tidak valid. Silakan login ulang.');
       } else {
-        throw Exception('Gagal memuat data: ${response.statusCode}');
+        return ResponseDataList<ProductModel>(
+          status: false,
+          message: "Error ${response.statusCode}",
+          data: [],
+        );
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      print("❌ Exception: $e");
+      return ResponseDataList<ProductModel>(
+        status: false,
+        message: "Error: $e",
+        data: [],
+      );
     }
   }
 }

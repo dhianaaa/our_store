@@ -1,6 +1,13 @@
+// lib/models/response_data_map.dart
+
 class ResponseDataMap {
-  bool status;
-  String message;
-  Map? data;
-  ResponseDataMap({required this.status, required this.message, this.data});
+  final bool status;
+  final String? message;
+  final dynamic data;
+
+  ResponseDataMap({
+    required this.status,
+    this.message,
+    this.data,
+  });
 }

@@ -48,7 +48,7 @@ class UserService {
           token: data["token"],
           message: data["message"],
           id: data["user"]["id"],
-          nama_user: data["user"]["nama_user"],
+          namaUser: data["user"]["nama_user"],
           email: data["user"]["email"],
           role: data["user"]["role"],
         );

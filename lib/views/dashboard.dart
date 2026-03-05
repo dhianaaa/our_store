@@ -18,7 +18,7 @@ class _DashboardViewState extends State<DashboardView> {
     var user = await userLogin.getUserLogin();
     if (user.status != false) {
       setState(() {
-        nama = user.nama_user;
+        nama = user.namaUser;
         role = user.role;
       });
     }
